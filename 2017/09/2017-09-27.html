@@ -1,0 +1,14 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 27, 2017</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 27, 2017</h1></header><div class="content"><div class="diary"><h2 id="virtual-dom">Virtual Dom</h2>
+<p>Virtual Dom 是用来表示DOM结点树结构的js对象。在Vue 2.0中，模板会被编译成render function。render function在被调用时会传入data并返回Virtual Dom。所以，在每次组件data更新的时候，都会重新调用render function，产生新的Virtrual DOM Tree。再利用diff算法找出与原来的DOM Tree相比真正需要更新的节点，并更新真正的dom元素。</p>
+<p>DOM更新的代价很高。即使数据只作了一点改动，也需要更新整个视图，造成极大的浪费。Virtual DOM 在数据改变和视图更新之间加了一层计算，可以</p>
+<ul>
+<li>在只有少部分数据发生变化时，有效提高视图更新的效率</li>
+<li>避免整个视图更新使得input 和 textarea失焦</li>
+<li>避免直接操作DOM，提高代码的维护性</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/Amanda111" class="author-name">Amanda</a>-<a href="https://github.com/Amanda111/my-tech-diary" class="source-repo">Source</a></address></footer></body></html>
