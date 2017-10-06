@@ -1,0 +1,66 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>October 6, 2017</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>October 6, 2017</h1></header><div class="content"><div class="diary"><h2 id="vue-virtual-template-to-render-function">Vue Virtual Template to render function</h2>
+<p><strong>在Vue2.0中，模板语法会编译成render function。首先来看一下源码中定义的内部render的帮助方法</strong></p>
+<pre><code><span class="hljs-comment">// core/instance/render.js</span>
+  vm._c = (<span class="hljs-tag">a</span>, <span class="hljs-tag">b</span>, c, d) =&gt; <span class="hljs-function"><span class="hljs-title">createElement</span><span class="hljs-params">(vm, a, b, c, d, false)</span></span> <span class="hljs-comment">// 创建元素</span>
+
+  Vue<span class="hljs-class">.prototype</span>._o = markOnce <span class="hljs-comment">// 仅记一次埋点</span>
+  Vue<span class="hljs-class">.prototype</span>._n = toNumber <span class="hljs-comment">// 转为 Number 类型</span>
+  Vue<span class="hljs-class">.prototype</span>._s = toString <span class="hljs-comment">// 转为 String 类型</span>
+  Vue<span class="hljs-class">.prototype</span>._l = renderList <span class="hljs-comment">// 渲染列表</span>
+  Vue<span class="hljs-class">.prototype</span>._t = renderSlot <span class="hljs-comment">// 渲染插槽</span>
+  Vue<span class="hljs-class">.prototype</span>._q = looseEqual <span class="hljs-comment">// 比较两个对象是否等值的方法</span>
+  Vue<span class="hljs-class">.prototype</span>._i = looseIndexOf <span class="hljs-comment">// 返回某个值的下标</span>
+  Vue<span class="hljs-class">.prototype</span>._m = renderStatic <span class="hljs-comment">// 渲染静态资源</span>
+  Vue<span class="hljs-class">.prototype</span>._f = resolveFilter <span class="hljs-comment">// 解析 Filter</span>
+  Vue<span class="hljs-class">.prototype</span>._k = checkKeyCodes <span class="hljs-comment">// 检查用户自定义的 v-on 属性</span>
+  Vue<span class="hljs-class">.prototype</span>._b = bindObjectProps <span class="hljs-comment">// 将 v-bind="object" 的数据绑定到 VNode's data</span>
+  Vue<span class="hljs-class">.prototype</span>._v = createTextVNode <span class="hljs-comment">// 生成文本节点</span>
+  Vue<span class="hljs-class">.prototype</span>._e = createEmptyVNode <span class="hljs-comment">// 生成空节点</span>
+  Vue<span class="hljs-class">.prototype</span>._u = resolveScopedSlots <span class="hljs-comment">// 解析 ScopedSlots</span>
+</code></pre><h3 id="v-if">v-if</h3>
+<pre><code>&lt;div&gt;
+  &lt;p v-<span class="hljs-keyword">if</span>=<span class="hljs-string">"message"</span>&gt;
+    <span class="hljs-expansion">{{ message }}</span>
+  &lt;<span class="hljs-regexp">/p&gt;
+  &lt;p v-else&gt;
+    No message.
+  &lt;/p</span>&gt;
+&lt;<span class="hljs-regexp">/div&gt;</span>
+</code></pre><pre><code><span class="hljs-comment">// render function</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">anonymous</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">with</span>(<span class="hljs-keyword">this</span>){<span class="hljs-keyword">return</span> _c(<span class="hljs-string">'div'</span>,[(message)?_c(<span class="hljs-string">'p'</span>,[_v(_s(message))]):_c(<span class="hljs-string">'p'</span>,[_v(<span class="hljs-string">"No message."</span>)])])}
+}
+</code></pre><p>v-if被编译成一个三元表达式</p>
+<h3 id="v-model">v-model</h3>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">v-model</span>=<span class="hljs-value">"test"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+</code></pre><pre><code>//render <span class="hljs-keyword">function</span>
+<span class="hljs-keyword">function</span> anonymous() {
+  with(this){return _c(<span class="hljs-string">'div'</span>,[_c(<span class="hljs-string">'input'</span>,{directives:[{name:<span class="hljs-string">"model"</span>,rawName:<span class="hljs-string">"v-model"</span>,value:(test),expression:<span class="hljs-string">"test"</span>}],domProps:{<span class="hljs-string">"value"</span>:(test)},on:{<span class="hljs-string">"input"</span>:function(<span class="hljs-variable">$event</span>){if(<span class="hljs-variable">$event</span>.target.composing)return;test=<span class="hljs-variable">$event</span>.target.value}}})])}
+}
+</code></pre><p><code>{directives:[...],domProps:{...},on:{...} }</code> 将会传入到VNode的data属性中。</p>
+<h3 id="staticrenderfns">staticRenderFns</h3>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">header</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">h1</span>&gt;</span>I'm a template!<span class="hljs-tag">&lt;/<span class="hljs-title">h1</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">header</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+</code></pre><pre><code><span class="hljs-comment">// render function</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">anonymous</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">with</span>(<span class="hljs-keyword">this</span>){<span class="hljs-keyword">return</span> _m(<span class="hljs-number">0</span>)}
+}
+</code></pre><pre><code><span class="hljs-comment">//staticRenderFns</span>
+_<span class="hljs-function">m</span>(0)<span class="hljs-value">: function <span class="hljs-function">anonymous</span>() {
+  <span class="hljs-function">with</span>(this){return _<span class="hljs-function">c</span>(<span class="hljs-string">'div'</span>,[_<span class="hljs-function">c</span>(<span class="hljs-string">'header'</span>,[_<span class="hljs-function">c</span>(<span class="hljs-string">'h1'</span>,[_<span class="hljs-function">v</span>(<span class="hljs-string">"I'm a template!"</span>)])])])}
+}</span>
+</code></pre><p>这些与data没有关联，不会发生变化的VNode节点，会单独生成staticRenderFns 函数。与VDOM 中 diff算法优化相关</p>
+<h4 id="links-">Links:</h4>
+<p><a href="http://zhouweicsu.github.io/blog/2017/04/21/vue-2-0-template/">Vue2.0 源码阅读：模板渲染</a></p>
+<p><a href="http://blog.cgsdream.org/2016/11/23/vue-source-analysis-3/">Vue源码浅析（三）-render函数</a></p>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/Amanda111" class="author-name">Amanda</a>-<a href="https://github.com/Amanda111/my-tech-diary" class="source-repo">Source</a></address></footer></body></html>
