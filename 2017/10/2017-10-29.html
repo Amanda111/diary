@@ -1,0 +1,38 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>October 29, 2017</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>October 29, 2017</h1></header><div class="content"><div class="diary"><h2 id="react-section-1-">React小书 Section 1 笔记</h2>
+<h3 id="-this">事件中的this</h3>
+<p>在React的方法中，将this打印出来发现，值为null或者是undefined，并没有指向该实例本身。所以，如果想在事件函数中使用当前的实例，则需要使用<code>bind</code>将方法绑定到当前实例上。</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">h1</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{this.handleClickOnTitle.bind(this)}</span>&gt;</span>React 小书<span class="hljs-tag">&lt;/<span class="hljs-title">h1</span>&gt;</span>
+</code></pre><h3 id="-">渲染列表</h3>
+<p>对于用表达式套数组罗列到页面上的元素，都要为每个元素加上 key 属性，这个 key 必须是每个元素唯一的标识。最好是后台返回的key值。</p>
+<blockquote>
+<p>preact throw no errors.</p>
+</blockquote>
+<h3 id="setstate">setState</h3>
+<p>setState 方法由父类 Component 所提供。当我们调用这个函数的时候，React.js 会更新组件的状态 state ，并且重新调用 render 方法，然后再把 render 方法所渲染的最新的内容显示到页面上。它接受一个对象或者函数作为参数。</p>
+<pre><code>this.<span class="hljs-function"><span class="hljs-title">setState</span><span class="hljs-params">({ items })</span></span>
+this.<span class="hljs-function"><span class="hljs-title">setState</span><span class="hljs-params">({ count: <span class="hljs-number">0</span> })</span></span> <span class="hljs-comment">// =&gt; undefined</span>
+this.<span class="hljs-function"><span class="hljs-title">setState</span><span class="hljs-params">({ count: this.state.count + <span class="hljs-number">1</span>})</span></span> <span class="hljs-comment">// =&gt; undefined + 1 = NaN</span>
+</code></pre><p>像上面那样调用 setState 的时候，React.js 并不会马上修改 state。而是把这个对象放到一个更新队列里面，稍后才会从队列当中把新的状态提取出来合并到 state 当中，然后再触发组件更新。</p>
+<pre><code>    <span class="hljs-keyword">this</span>.setState(<span class="hljs-function"><span class="hljs-params">(prevState)</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> { <span class="hljs-attribute">count</span>: <span class="hljs-number">0</span> }
+    })
+    <span class="hljs-keyword">this</span>.setState(<span class="hljs-function"><span class="hljs-params">(prevState)</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> { <span class="hljs-attribute">count</span>: prevState.count + <span class="hljs-number">1</span> } <span class="hljs-regexp">//</span> 上一个 setState 的返回是 count 为 <span class="hljs-number">0</span>，当前返回 <span class="hljs-number">1</span>
+    })
+</code></pre><p>即使调用了这么多次的setState，也只重新渲染一次组件。因为React会把 JavaScript 事件循环中的消息队列的同一个消息中的 setState 都进行合并。</p>
+<h3 id="-">事件监听</h3>
+<p>一般情况下，像onClick等 on* 的事件监听只能用在普通的 HTML 的标签上。如果写在组件标签上，则onClick函数会作为props传进子组件。</p>
+<h3 id="props">props</h3>
+<p><strong>defaultProps</strong></p>
+<pre><code><span class="hljs-keyword">static</span> defaultProps = {
+   likedText: <span class="hljs-string">'取消'</span>,
+   unlikedText: <span class="hljs-string">'点赞'</span>
+}
+</code></pre><p><strong>props 不可变</strong></p>
+<p>在子组件中不可以修改props。如果需要改变props，只能在父组件中setState，使父组件重新渲染，将新的props传入子组件中。</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/Amanda111" class="author-name">Amanda</a>-<a href="https://github.com/Amanda111/my-tech-diary" class="source-repo">Source</a></address></footer></body></html>
