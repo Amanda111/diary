@@ -1,0 +1,38 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>November 9, 2017</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>November 9, 2017</h1></header><div class="content"><div class="diary"><h2 id="z-index">z-index</h2>
+<h3 id="-">什么时候会发生元素重叠：</h3>
+<ol>
+<li>元素上设置了负margin值，使得元素向外偏移，有可能与其他元素重叠</li>
+<li>设置浮动。浮动元素会脱离文档的普通流，有可能覆盖或遮挡掉文档中的元素。</li>
+<li>使用position的relative/absolute/fixed属性进行定位</li>
+</ol>
+<h3 id="z-index-">z-index如何起作用：</h3>
+<ol>
+<li>z-index 属性对定位元素生效，也就是定义了position relative/absolute/fixed属性的元素</li>
+<li><p>对使用flex布局的元素也有效（文章最后的两篇参考文章皆有误）</p>
+<blockquote>
+<p>Flex items paint exactly the same as inline blocks [CSS21], except that order-modified document order is used in place of raw document order, and z-index values other than auto create a stacking context even if position is static (behaving exactly as if position were relative) —— from <a href="https://www.w3.org/TR/css-flexbox-1/#painting">W3C</a></p>
+</blockquote>
+<p> <a href="http://jsfiddle.net/Lbs728hs/42/">z-index作用在display:flex元素上的效果</a></p>
+</li>
+<li><p>z-index 值的比较只有在同一个层叠上下文才有效</p>
+</li>
+<li>值大的元素发生重叠时会在值小的元素上面；数值相同时，在 HTML 结构中排后面的在上面</li>
+</ol>
+<h3 id="-">关于层叠上下文：</h3>
+<ol>
+<li>设置了 z-index 属性为整数值(包括0)的元素，自身会创建一个层叠上下文</li>
+<li>opacity 属性值小于 1 的元素</li>
+<li>transform 属性值不为 &quot;none&quot;的元素</li>
+<li>更多请参考<a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Understanding_z_index/The_stacking_context">MDN</a></li>
+</ol>
+<p>使用z-index值时需要注意的是，要确保进行比较的元素是在同一层叠上下文中。如果父元素上设置了z-index，则子元素的层叠顺序只会相对于父元素计算，不会与外部元素比较</p>
+<p>参考资料：</p>
+<p><a href="http://layout.imweb.io/">深入了解 Z-Index</a></p>
+<p><a href="https://www.w3.org/TR/css-flexbox-1/#painting">https://www.w3.org/TR/css-flexbox-1/#painting</a></p>
+<p><a href="http://www.cnblogs.com/mind/archive/2012/04/01/2198995.html">http://www.cnblogs.com/mind/archive/2012/04/01/2198995.html</a></p>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/Amanda111" class="author-name">Amanda</a>-<a href="https://github.com/Amanda111/my-tech-diary" class="source-repo">Source</a></address></footer></body></html>
