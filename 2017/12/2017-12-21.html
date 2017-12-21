@@ -1,0 +1,67 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>December 21, 2017</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>December 21, 2017</h1></header><div class="content"><div class="diary"><h2 id="http-">HTTP缓存</h2>
+<p>HTTP缓存大致可分为<strong>强缓存</strong>和<strong>协商缓存</strong></p>
+<blockquote>
+<p>强缓存如果命中缓存不需要和服务器端发生交互</p>
+<p>协商缓存不管是否命中都要和服务器端发生交互</p>
+</blockquote>
+<h3 id="-">强缓存</h3>
+<p>Expires 和 Cache-Control 两个字段都可以用来表明一些规则</p>
+<ul>
+<li>Expires</li>
+</ul>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">META</span> <span class="hljs-attribute">HTTP-EQUIV</span>=<span class="hljs-value">"EXPIRES"</span> <span class="hljs-attribute">CONTENT</span>=<span class="hljs-value">"Mon, 22 Jul 2002 11:12:01 GMT"</span>&gt;</span>
+</code></pre><pre><code> + Expires 指缓存过期的时间，超过了这个时间点就代表资源过期
+ + 如果时间表示出错或者没有转换到正确的时区都可能造成缓存生命周期出错
+ + Expires 是 HTTP/1.0 的标准, <span class="hljs-operator"><span class="hljs-keyword">Cache</span>-Control是 <span class="hljs-keyword">HTTP</span>/<span class="hljs-number">1.1</span> 的标准
+ + 两个同时存在时 <span class="hljs-keyword">Cache</span>-Control 的优先级更高</span>
+</code></pre><ul>
+<li><p>Cache-Control(多字段)</p>
+<ul>
+<li><p>max-age 指定一个时间长度，在这个时间段内缓存是有效的，单位是s</p>
+<pre><code>  <span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">http-equiv</span>=<span class="hljs-value">"Cache-Control"</span> <span class="hljs-attribute">content</span>=<span class="hljs-value">"max-age=3600"</span>&gt;</span>
+</code></pre></li>
+<li><p>public 表明响应可以被任何对象（发送请求的客户端、代理服务器等等）缓存</p>
+<pre><code> <span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">http-equiv</span>=<span class="hljs-value">"Cache-Control"</span> <span class="hljs-attribute">content</span>=<span class="hljs-value">"public"</span>&gt;</span>
+</code></pre></li>
+<li><p>private 表明响应只能被单个用户缓存，不能作为共享缓存（即代理服务器不能缓存它）</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">http-equiv</span>=<span class="hljs-value">"Cache-Control"</span> <span class="hljs-attribute">content</span>=<span class="hljs-value">"private"</span>&gt;</span>
+</code></pre></li>
+</ul>
+</li>
+</ul>
+<p>当HTTP 头信息定义了上述缓存规则后，在没有禁用缓存并且没有超过有效时间的情况下，再次访问这个资源命中了缓存，就不会向服务器请求资源而是直接从浏览器缓存中取。</p>
+<h3 id="-">协商缓存</h3>
+<p>客户端和服务器端通过某种验证机制验证当前请求资源是否可以使用缓存。</p>
+<blockquote>
+<p>浏览器第一次请求数据之后会将数据和响应头部的缓存标识存储起来。再次请求时会带上存储的头部字段，服务器端验证是否可用。如果返回 304 Not Modified，代表资源没有发生改变可以使用缓存的数据，获取新的过期时间。反之返回 200 就相当于重新请求了一遍资源并替换旧资源。</p>
+</blockquote>
+<ul>
+<li><p>Last-modified/If-Modified-Since</p>
+<ul>
+<li>Last-modified 服务器端返回资源最后修改时间</li>
+<li>浏览器会记录该时间</li>
+<li>再次请求时，请求头部带上 If-Modified-Since 即为之前记录下的时间</li>
+<li>服务器端对比资源的最后修改时间</li>
+<li>若修改过就返回最新资源，状态码 200，若没有修改过则返回 304</li>
+<li>Last-modified/If-Modified-Since 一定要配合 Expires/Cache-Control 使用，需要定义文件缓存时间。</li>
+</ul>
+</li>
+<li><p>Etag/If-None-Match</p>
+<ul>
+<li>与Last-modified/If-Modified-Since相似，只是记录的是一段 hash 字符串</li>
+<li>精确度高，Last-modified 只能精确到秒</li>
+<li>优先级高</li>
+</ul>
+</li>
+</ul>
+<h3 id="-">缓存策略</h3>
+<p>是否用缓存 —&gt; 是否需要验证缓存 —&gt; 是否用代理服务器的缓存 -&gt;是否超过时间了 —&gt;检查资源是否有变</p>
+<p><em>参考资料</em></p>
+<p><a href="https://zhuanlan.zhihu.com/p/29750583?utm_source=qq&amp;utm_medium=social(">HTTP 缓存机制一二三</a>)</p>
+<p><a href="http://www.i18nguy.com/markup/metatags.html">Useful HTML Meta Tags</a></p>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/Amanda111" class="author-name">Amanda</a>-<a href="https://github.com/Amanda111/my-tech-diary" class="source-repo">Source</a></address></footer></body></html>
