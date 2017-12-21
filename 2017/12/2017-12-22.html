@@ -1,0 +1,24 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>December 22, 2017</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>December 22, 2017</h1></header><div class="content"><div class="diary"><h2 id="service-worker-">Service Worker和缓存实现离线开发</h2>
+<h3 id="service-worker">Service Worker</h3>
+<ul>
+<li>Service Worker是在浏览器背后默默运行的一个线程，脱离浏览器窗体</li>
+<li>使用self访问全局上下文</li>
+<li>Service Worker设计为完全异步，同步API（如XHR和localStorage）不能在Service Worker中使用</li>
+<li>必须是https协议的，但在<a href="http://localhost或者http://127.0.0.1的本地环境下的时候也可以跑">http://localhost或者http://127.0.0.1的本地环境下的时候也可以跑</a></li>
+</ul>
+<h3 id="service-worker-">Service Worker的生命周期</h3>
+<ul>
+<li>Download（下载注册的JS文件）</li>
+<li>register</li>
+<li>installing</li>
+<li>installed</li>
+<li>waiting</li>
+<li>active</li>
+<li>activated</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/Amanda111" class="author-name">Amanda</a>-<a href="https://github.com/Amanda111/my-tech-diary" class="source-repo">Source</a></address></footer></body></html>
